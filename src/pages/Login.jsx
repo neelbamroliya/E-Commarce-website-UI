@@ -10,7 +10,7 @@ const Container = styled.div`
 `
 
 const Wrapper = styled.div`
-    width: 70%;
+    width: 50%;
     height: 50%;
     padding: 20px;
     background-color: white;
@@ -28,14 +28,14 @@ const Title = styled.h1`
 
 const Form = styled.form`
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 `
 
 const Input = styled.input`
-    flex: 1;
-    min-width: 40%;
+    /* flex: 1; */
+    width: 60%;
     margin: 20px 10px 0 0 ;
     padding: 10px;
 `
@@ -48,26 +48,32 @@ const Button = styled.button`
     background-color: teal;
     color: white;
     cursor: pointer;
+    margin-bottom: 10px;
 `
 
+const Link = styled.a`
+    margin: 10px 0px;
+    font-size: 14px;
+    text-decoration: underline;
+    cursor: pointer;
 
-const Register = () => {
+`
+
+const Login = () => {
     return (
         <Container>
             <Wrapper>
-                <Title>CREATE AN ACCOUNT</Title>
+                <Title>SIGN IN</Title>
                 <Form>
-                    <Input placeholder="name" />
-                    <Input placeholder="last name" />
                     <Input placeholder="username" />
-                    <Input placeholder="email" />
                     <Input placeholder="password" />
-                    <Input placeholder="confirm password" />
-                    <Button>CREATE</Button>
+                    <Button>LOGIN</Button>
+                    <Link>forget password ?</Link>
+                    <Link>CREATE A NEW ACCOUNT</Link>
                 </Form>
             </Wrapper>
         </Container>
     )
 }
 
-export default Register
+export default Login
