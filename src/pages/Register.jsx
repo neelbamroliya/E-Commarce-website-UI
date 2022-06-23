@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 import { mobile, teblet } from "../responsive"
 
@@ -76,6 +77,7 @@ const Register = () => {
                     </Form>
                 </Wrapper>
             </Container>
+            <Footer />
         </>
     )
 }

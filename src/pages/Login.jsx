@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 import { mobile, teblet } from "../responsive"
 
@@ -20,7 +21,7 @@ const Wrapper = styled.div`
     /* box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; */
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
     ${mobile({ width: "75%" })}
-    ${teblet({ width: "80%", height: "40%" })}
+    ${teblet({ width: "70%", height: "60%" })}
 `
 
 const Title = styled.h1`
@@ -35,7 +36,7 @@ const Form = styled.form`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    ${teblet({ marginTop: "150px" })}
+    /* ${teblet({ marginTop: "20px" })} */
 `
 
 const Input = styled.input`
@@ -43,7 +44,7 @@ const Input = styled.input`
     width: 60%;
     margin: 20px 10px 0 0 ;
     padding: 10px;
-    ${teblet({ margin: "15px 5px 0 0" })}
+    ${teblet({ margin: "10px 5px 0 0" })}
 `
 
 const Button = styled.button`
@@ -81,6 +82,7 @@ const Login = () => {
                     </Form>
                 </Wrapper>
             </Container>
+            <Footer />
         </>
     )
 }
