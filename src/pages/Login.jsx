@@ -1,4 +1,6 @@
 import styled from "styled-components"
+import Navbar from "../components/Navbar"
+import { mobile, teblet } from "../responsive"
 
 const Container = styled.div`
     width: 100vw;
@@ -17,6 +19,8 @@ const Wrapper = styled.div`
     border-radius: 20px;
     /* box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; */
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    ${mobile({ width: "75%" })}
+    ${teblet({ width: "80%", height: "40%" })}
 `
 
 const Title = styled.h1`
@@ -31,6 +35,7 @@ const Form = styled.form`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    ${teblet({ marginTop: "150px" })}
 `
 
 const Input = styled.input`
@@ -38,6 +43,7 @@ const Input = styled.input`
     width: 60%;
     margin: 20px 10px 0 0 ;
     padding: 10px;
+    ${teblet({ margin: "15px 5px 0 0" })}
 `
 
 const Button = styled.button`
@@ -61,18 +67,21 @@ const Link = styled.a`
 
 const Login = () => {
     return (
-        <Container>
-            <Wrapper>
-                <Title>SIGN IN</Title>
-                <Form>
-                    <Input placeholder="username" />
-                    <Input placeholder="password" />
-                    <Button>LOGIN</Button>
-                    <Link>forget password ?</Link>
-                    <Link>CREATE A NEW ACCOUNT</Link>
-                </Form>
-            </Wrapper>
-        </Container>
+        <>
+            <Navbar />
+            <Container>
+                <Wrapper>
+                    <Title>SIGN IN</Title>
+                    <Form>
+                        <Input placeholder="username" />
+                        <Input placeholder="password" />
+                        <Button>LOGIN</Button>
+                        <Link>forget password ?</Link>
+                        <Link>CREATE A NEW ACCOUNT</Link>
+                    </Form>
+                </Wrapper>
+            </Container>
+        </>
     )
 }
 

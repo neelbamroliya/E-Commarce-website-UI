@@ -1,4 +1,6 @@
 import styled from "styled-components"
+import Navbar from "../components/Navbar"
+import { mobile, teblet } from "../responsive"
 
 const Container = styled.div`
     width: 100vw;
@@ -17,6 +19,9 @@ const Wrapper = styled.div`
     border-radius: 20px;
     /* box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; */
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    ${mobile({ width: "75%", height: "64%" })}
+    // eslint-disable-next-line no-undef
+    ${teblet({ width: "80%", height: "35%" })}
 `
 
 const Title = styled.h1`
@@ -31,6 +36,7 @@ const Form = styled.form`
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
+    ${teblet({ marginTop: "110px" })}
 `
 
 const Input = styled.input`
@@ -48,25 +54,29 @@ const Button = styled.button`
     background-color: teal;
     color: white;
     cursor: pointer;
+    ${mobile({ width: "75%" })}
 `
 
 
 const Register = () => {
     return (
-        <Container>
-            <Wrapper>
-                <Title>CREATE AN ACCOUNT</Title>
-                <Form>
-                    <Input placeholder="name" />
-                    <Input placeholder="last name" />
-                    <Input placeholder="username" />
-                    <Input placeholder="email" />
-                    <Input placeholder="password" />
-                    <Input placeholder="confirm password" />
-                    <Button>CREATE</Button>
-                </Form>
-            </Wrapper>
-        </Container>
+        <>
+            <Navbar />
+            <Container>
+                <Wrapper>
+                    <Title>CREATE AN ACCOUNT</Title>
+                    <Form>
+                        <Input placeholder="name" />
+                        <Input placeholder="last name" />
+                        <Input placeholder="username" />
+                        <Input placeholder="email" />
+                        <Input placeholder="password" />
+                        <Input placeholder="confirm password" />
+                        <Button>CREATE</Button>
+                    </Form>
+                </Wrapper>
+            </Container>
+        </>
     )
 }
 

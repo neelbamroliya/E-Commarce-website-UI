@@ -3,6 +3,7 @@ import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRound
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import { useState } from "react";
 import { sliderItems } from "../data";
+import { mobile, teblet } from "../responsive";
 
 const Container = styled.div`
     width: 100%;
@@ -10,6 +11,8 @@ const Container = styled.div`
     display: flex;
     position: relative;
     overflow: hidden;
+    ${mobile({ display: "none" })}
+    ${teblet({ height: "80vh" })}
 `
 
 const Arrow = styled.div`
@@ -44,15 +47,17 @@ const Slide = styled.div`
     width: 100vw;
     height: 100vh;
     background-color: #${props => props.bg};
-`
+    ${teblet({ width: "100vw", height: "100%" })}
+    `
 
 const ImgContainer = styled.div`
     flex: 1;
     height: 100%;
-`
+    `
 
 const Image = styled.img`
     height: 80%;
+    ${teblet({ height: "100%", width: "100%" })}
 `
 
 const InfoContainer = styled.div`
@@ -62,12 +67,14 @@ const InfoContainer = styled.div`
 
 const Title = styled.h1`
     font-size: 70px;
+    ${teblet({ fontSize: "40px" })}
 `
 const Desc = styled.p`
     margin: 50px;
     font-size: 50px;
     font-weight: 500;
     letter-spacing: 3px;
+    ${teblet({ margin: "15px", fontSize: "24px" })}
 `
 const Button = styled.button`
     padding: 10px;
