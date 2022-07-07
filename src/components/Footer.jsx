@@ -7,6 +7,7 @@ import RoomIcon from '@mui/icons-material/Room';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
 import { mobile } from "../responsive";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
     display: flex;
@@ -41,6 +42,7 @@ const SocialIcon = styled.div`
     align-items: center;
     justify-content: center;
     margin-right: 20px;
+    cursor: pointer;
 `
 
 const Center = styled.div`
@@ -55,25 +57,26 @@ const Title = styled.h3`
 
 const List = styled.ul`
     margin: 0;
-    padding: 0;
+    padding:0;
     list-style: none;
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
+    flex-direction: column;
+    
 `
 
 const ListItem = styled.li`
     width: 50%;
     margin-bottom: 10px;
+    color: black;
+    margin-left: 20px;
 `
 
 const Right = styled.div`
     flex: 1;
     padding: 20px;
     ${mobile({ backgroundColor: "#eee" })}
-    /* display: flex;
-    align-items: center;
-    justify-content: start;
-    flex-direction: column; */
+
 `
 
 const ContactItem = styled.div`
@@ -108,15 +111,27 @@ const Footer = () => {
             <Center>
                 <Title>USEFUL LINKS</Title>
                 <List>
-                    <ListItem>Home</ListItem>
-                    <ListItem>Cart</ListItem>
-                    <ListItem>Man Fashion</ListItem>
-                    <ListItem>Woman Fashion</ListItem>
-                    <ListItem>Accessories</ListItem>
-                    <ListItem>My Account</ListItem>
-                    <ListItem>Order Tracking</ListItem>
-                    <ListItem>Wishlist</ListItem>
-                    <ListItem>Terms</ListItem>
+                    <Link to="/" style={{ textDecoration: "none" }}>
+                        <ListItem>Home</ListItem>
+                    </Link>
+                    <Link to="/cart" style={{ textDecoration: "none" }}>
+                        <ListItem>Cart</ListItem>
+                    </Link>
+                    <Link to="/products/man" style={{ textDecoration: "none" }}>
+                        <ListItem>Man Fashion</ListItem>
+                    </Link>
+                    <Link to="/products/woman" style={{ textDecoration: "none" }}>
+                        <ListItem>Woman Fashion</ListItem>
+                    </Link>
+                    <Link to="/products" style={{ textDecoration: "none" }}>
+                        <ListItem>Products</ListItem>
+                    </Link>
+                    <Link to="#" style={{ textDecoration: "none" }}>
+                        <ListItem>Wishlist</ListItem>
+                    </Link>
+                    <Link to="#" style={{ textDecoration: "none" }}>
+                        <ListItem>Terms</ListItem>
+                    </Link>
                 </List>
             </Center>
             <Right>

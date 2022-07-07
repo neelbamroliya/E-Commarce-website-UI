@@ -4,6 +4,10 @@ import Search from '@mui/icons-material/Search';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { mobile } from '../responsive';
 import { Badge } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom';
+import { addtoCartReq, loadCartReq, logout } from '../redux/apiCalls';
+import { emptyCart } from '../redux/cartRedux';
 
 const Container = styled.div`
     height: 60px;
@@ -56,6 +60,7 @@ const Logo = styled.h1`
     font-weight: bold;
     text-align: center;
     ${mobile({ fontSize: "24px" })}
+    color: black;
 `
 
 const Right = styled.div`
@@ -70,10 +75,43 @@ const MenuItem = styled.div`
     font-size: 14px;
     cursor: pointer;
     margin-left: 25px;
+    color: black;
     ${mobile({ fontSize: "12px", marginLeft: "7px" })}
 `
 
+const Logout = styled.button`
+    border: none;
+    color: red;
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+`
+
 const Navbar = () => {
+
+    const user = useSelector(state => state.user.currentUser)
+    const cart = useSelector(state => state.cart)
+    const dispatch = useDispatch()
+    const history = useHistory()
+
+    const handleCart = () => {
+        if (user && cart.products === []) {
+            console.log(user);
+            loadCartReq(dispatch, user._id)
+        }
+        cart.userId && addtoCartReq(cart.products, cart.userId)
+    }
+
+
+    const handleClick = (e) => {
+        e.preventDefault()
+        addtoCartReq(cart.products, cart.userId)
+        logout(dispatch, JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser)
+        dispatch(emptyCart())
+        history.push("/login")
+    }
+
     return (
         <Container>
             <Wrapper>
@@ -85,17 +123,30 @@ const Navbar = () => {
                     </SearchContainer>
                 </Left>
                 <Center>
-                    <Logo>TSELLERS</Logo>
+                    <Link to="/" style={{ textDecoration: "none" }}>
+                        <Logo>TSELLERS</Logo>
+                    </Link>
                 </Center>
                 <Right>
-
-                    <MenuItem>REGISTER</MenuItem>
-                    <MenuItem>SIGN IN</MenuItem>
-                    <MenuItem>
-                        <Badge badgeContent={4} color="primary">
-                            <ShoppingCartOutlinedIcon />
-                        </Badge>
-                    </MenuItem>
+                    {user ?
+                        <Logout onClick={handleClick}>Logout</Logout>
+                        :
+                        <>
+                            <Link to="/register" style={{ textDecoration: "none" }}>
+                                <MenuItem>REGISTER</MenuItem>
+                            </Link>
+                            <Link to="/login" style={{ textDecoration: "none" }}>
+                                <MenuItem>SIGN IN</MenuItem>
+                            </Link>
+                        </>
+                    }
+                    <Link to="/cart">
+                        <MenuItem>
+                            <Badge badgeContent={cart.quantity} color="primary">
+                                <ShoppingCartOutlinedIcon style={{ color: "black" }} onClick={handleCart} />
+                            </Badge>
+                        </MenuItem>
+                    </Link>
                 </Right>
             </Wrapper>
         </Container>

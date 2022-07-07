@@ -6,6 +6,11 @@ import NewsLetter from "../components/NewsLetter"
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { mobile, teblet } from "../responsive"
+import { useLocation } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { publicRequest } from "../requestMethods"
+import { useDispatch, useSelector } from "react-redux"
+import { addProduct } from "../redux/cartRedux"
 
 const Container = styled.div`
 
@@ -70,8 +75,9 @@ const FilterColor = styled.div`
     border-radius: 50%;
     background-color: ${props => props.color};
     margin: 0px 5px;
+    margin-left: 10px ;
     cursor: pointer;
-    border: 1px solid black;
+    /* border: 1px solid black; */
 
 `
 
@@ -121,44 +127,92 @@ const Button = styled.button`
 `
 
 const Product = () => {
+    const location = useLocation()
+    const id = location.pathname.split("/")[2];
+    const [product, setProduct] = useState({})
+    const [quantity, setQuantity] = useState(1)
+    const [color, setColor] = useState("")
+    const [size, setSize] = useState("")
+    const user = useSelector(state => state.user.currentUser)
+    const dispatch = useDispatch()
+
+
+    useEffect(() => {
+        const getProduct = async () => {
+            try {
+                const res = await publicRequest.get(`/products/find/${id}`)
+                setProduct(res.data)
+            } catch (err) { }
+        }
+        getProduct()
+    }, [id])
+
+    const handleQuantity = (type) => {
+        if (type === "inc") {
+            setQuantity(quantity + 1)
+        } else {
+            quantity > 1 && setQuantity(quantity - 1)
+        }
+    }
+
+    const handleClick = (product, quantity) => {
+        //UPDATE CART
+        if (!user) {
+            alert("login first")
+        } else {
+            const prod = {
+                userId: user._id,
+                productId: product._id,
+                title: product.title,
+                img: product.img,
+                color,
+                size,
+                quantity,
+                price: product.price
+            }
+            // addtoCartReq(dispatch, prod, user)
+            dispatch(addProduct(prod))
+        }
+    }
+
     return (
         <Container>
             <Navbar />
             <Announcement />
             <Wrapper>
                 <ImgContainer>
-                    <Image src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVLIolT64VORdTeYMhv_aFSRWSL08sXqN7dw&usqp=CAU" />
+                    <Image src={product.img} />
                 </ImgContainer>
                 <InfoContainer>
-                    <Title>Craw nacked Full sleve T-shirt</Title>
-                    <Desc>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet ab hic molestias harum dolorem voluptas ipsa rerum sunt quisquam nisi. Laudantium expedita nihil dicta. Odio voluptate aspernatur voluptates necessitatibus quo perspiciatis qui architecto ipsa.</Desc>
-                    <Price>₹ 500</Price>
+                    <Title>{product.title}</Title>
+                    <Desc>{product.desc}</Desc>
+                    <Price>$ {product.price}</Price>
                     <FilterContainer>
                         <Filter>
                             <FilterTitle>Colors</FilterTitle>
-                            <FilterColor color="Dark Blue" />
-                            <FilterColor color="Black" />
-                            <FilterColor color="Purple" />
+                            {product.color?.map(c => (
+                                <FilterColor color={c} key={c} onClick={() => setColor(c)} />
+                            ))}
                         </Filter>
                         <Filter>
                             <FilterTitle>Size</FilterTitle>
-                            <FilterSize>
-                                <FilterSizeOption>XS</FilterSizeOption>
-                                <FilterSizeOption>S</FilterSizeOption>
-                                <FilterSizeOption>M</FilterSizeOption>
-                                <FilterSizeOption>L</FilterSizeOption>
-                                <FilterSizeOption>XL</FilterSizeOption>
-                                <FilterSizeOption>XXL</FilterSizeOption>
+                            <FilterSize onChange={e => setSize(e.target.value)}>
+                                {product.size?.map(s => (
+                                    <FilterSizeOption key={s}>{s}</FilterSizeOption>
+
+                                ))}
                             </FilterSize>
                         </Filter>
                     </FilterContainer>
                     <AddContainer>
                         <AmountContainer>
-                            <RemoveIcon />
-                            <Amount>1</Amount>
-                            <AddIcon />
+                            <RemoveIcon onClick={() => handleQuantity("dec")} />
+                            <Amount>{quantity}</Amount>
+                            <AddIcon onClick={() => handleQuantity("inc")} />
                         </AmountContainer>
-                        <Button>ADD TO CART</Button>
+                        <Button onClick={() => handleClick(product, quantity)}>ADD TO CART</Button>
+
+
                     </AddContainer>
                 </InfoContainer>
             </Wrapper>

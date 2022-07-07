@@ -4,6 +4,9 @@ import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRound
 import { useState } from "react";
 import { sliderItems } from "../data";
 import { mobile, teblet } from "../responsive";
+import { Link } from "react-router-dom";
+import { loadCartReq } from "../redux/apiCalls";
+import { useDispatch, useSelector } from 'react-redux';
 
 const Container = styled.div`
     width: 100%;
@@ -12,7 +15,7 @@ const Container = styled.div`
     position: relative;
     overflow: hidden;
     ${mobile({ display: "none" })}
-    ${teblet({ height: "80vh" })}
+    ${teblet({ height: "80vh", width: "100vw" })}
 `
 
 const Arrow = styled.div`
@@ -45,18 +48,20 @@ const Slide = styled.div`
     display: flex;
     align-items: center;
     width: 100vw;
-    height: 100vh;
+    height: 90vh;
     background-color: #${props => props.bg};
     ${teblet({ width: "100vw", height: "100%" })}
-    `
+`
 
 const ImgContainer = styled.div`
     flex: 1;
     height: 100%;
-    `
+`
 
 const Image = styled.img`
-    height: 80%;
+    height: 100%;
+    object-fit: cover;
+    width: 90%;
     ${teblet({ height: "100%", width: "100%" })}
 `
 
@@ -76,6 +81,7 @@ const Desc = styled.p`
     letter-spacing: 3px;
     ${teblet({ margin: "15px", fontSize: "24px" })}
 `
+
 const Button = styled.button`
     padding: 10px;
     font-size:20px;
@@ -85,11 +91,18 @@ const Button = styled.button`
 
 const Slider = () => {
     const [slideIndex, setSlideIndex] = useState(0)
+    const user = useSelector(state => state.user.currentUser)
+    const dispatch = useDispatch()
     const handleClick = (direction) => {
         if (direction === "left") {
             setSlideIndex(slideIndex > 0 ? slideIndex - 1 : 2)
         } else {
             setSlideIndex(slideIndex < 2 ? slideIndex + 1 : 0)
+        }
+    }
+    const handleCart = () => {
+        if (user) {
+            loadCartReq(dispatch, user._id)
         }
     }
 
@@ -107,41 +120,12 @@ const Slider = () => {
                         <InfoContainer>
                             <Title>{item.title}</Title>
                             <Desc>{item.desc}</Desc>
-                            <Button>SHOP NOW</Button>
+                            <Link to="/products">
+                                <Button onClick={handleCart}>SHOP NOW</Button>
+                            </Link>
                         </InfoContainer>
                     </Slide>
                 ))}
-                {/* <Slide bg="fcf1ed">
-                    <ImgContainer>
-                        <Image src="https://media.istockphoto.com/vectors/man-wearing-a-blank-white-tshirt-vector-id1048450844?s=612x612" />
-                    </ImgContainer>
-                    <InfoContainer>
-                        <Title>SUMMER SALE</Title>
-                        <Desc>DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF ON NEW ARRIVALS</Desc>
-                        <Button>SHOP NOW</Button>
-                    </InfoContainer>
-                </Slide>
-                <Slide bg="f5fafd">
-                    <ImgContainer>
-                        <Image src="https://media.istockphoto.com/vectors/man-wearing-a-blank-white-tshirt-vector-id1048450844?s=612x612" />
-                    </ImgContainer>
-                    <InfoContainer>
-                        <Title>POPULAR SALE</Title>
-                        <Desc>DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF ON NEW ARRIVALS</Desc>
-                        <Button>SHOP NOW</Button>
-                    </InfoContainer>
-                </Slide>
-                <Slide bg="fbf0f4">
-                    <ImgContainer>
-                        <Image src="https://media.istockphoto.com/vectors/man-wearing-a-blank-white-tshirt-vector-id1048450844?s=612x612" />
-                    </ImgContainer>
-                    <InfoContainer>
-                        <Title>BEST SALE</Title>
-                        <Desc>DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF ON NEW ARRIVALS</Desc>
-                        <Button>SHOP NOW</Button>
-                    </InfoContainer>
-                </Slide> */}
-
             </Wrapper>
             <Arrow direction="right" onClick={() => handleClick("right")}>
                 <ArrowForwardIosRoundedIcon />

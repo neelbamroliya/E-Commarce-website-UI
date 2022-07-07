@@ -3,12 +3,16 @@ import { categories } from "../data"
 import { mobile, teblet } from "../responsive"
 import CategoryItem from "./CategoryItem"
 
+
+
 const Container = styled.div`
     display: flex;
     padding: 20px;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
     ${mobile({ padding: "0px", flexDirection: "column" })}
     ${teblet({ padding: "10px" })}
+    background-color: #fcf6ed;
 `
 
 const Categories = () => {

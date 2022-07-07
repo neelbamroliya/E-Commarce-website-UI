@@ -2,9 +2,17 @@ import styled from "styled-components"
 import Announcement from "../components/Announcement"
 import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { mobile } from "../responsive";
+import { useDispatch, useSelector } from "react-redux";
+import StripeCheckout from "react-stripe-checkout";
+import { useEffect, useState } from "react";
+import { userRequest } from "../requestMethods";
+import { Link, useHistory } from "react-router-dom";
+import { addtoCartReq } from "../redux/apiCalls";
+import { removeProduct } from "../redux/cartRedux";
+
+const KEY = "pk_test_51LD1xGSES4oyVE3zjzxBPvqt99ViCZnLUYNVWVu2T9yYoHFWELQkhCaLoMXEqbH0H8KNuKbnuHxOIC2gbop0VToR001OqAid3r"
 
 const Container = styled.div`
 
@@ -107,7 +115,7 @@ const ProductAmountContainer = styled.div`
 `
 
 const ProductAmount = styled.div`
-    font-size: 24px;
+    font-size: 20px;
     margin: 5px;
     ${mobile({ margin: "5px 15px" })}
 `
@@ -150,7 +158,47 @@ const Button = styled.button`
     font-weight: 600;
 `
 
+const DeleteIconButton = styled.button`
+    color: red;
+    border:none;
+    background-color: transparent;
+    cursor: pointer;
+`
+
 const Cart = () => {
+    const cart = useSelector(state => state.cart)
+    const [stripeToken, setStripeToken] = useState("")
+    const history = useHistory()
+    const dispatch = useDispatch()
+
+    const handleClick = () => {
+        addtoCartReq(cart.products, cart.userId)
+    }
+
+    const handleDelete = (product) => {
+        dispatch(removeProduct({ userId: cart.userId, ...product }))
+        // removefromCartReq(dispatch, cart.userId, product)
+    }
+
+
+    const onToken = (token) => {
+        setStripeToken(token)
+    }
+
+    useEffect(() => {
+        const makeRequest = async () => {
+            try {
+                const res = await userRequest.post("/checkout/payment", {
+                    tokenId: stripeToken.id,
+                    amount: 500
+                })
+                // console.log(res.data);
+                history.push("/success", { data: res.data })
+            } catch (err) { }
+        }
+        stripeToken && makeRequest()
+    }, [stripeToken, cart.total, history])
+
     return (
         <Container>
             <Navbar />
@@ -158,74 +206,73 @@ const Cart = () => {
             <Wrapper>
                 <Title>YOUR CART</Title>
                 <Top>
-                    <TopButton>CONTINUE SHOPPING</TopButton>
+                    <Link to="/">
+                        <TopButton onClick={handleClick}>CONTINUE SHOPPING</TopButton>
+                    </Link>
                     <TopTexts>
-                        <TopText>Shoping Bag (2)</TopText>
+                        <TopText>Shoping Bag ({cart.products.length})</TopText>
                         <TopText>Your Wishlist (0)</TopText>
                     </TopTexts>
                     <TopButton type="filled">CHECKOUT NOW</TopButton>
                 </Top>
                 <Bottom>
                     <Info>
-                        <Product>
-                            <ProductDetail>
-                                <Image src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRelllQ01AoF4Sa73ik4o9IYBJERGM1MJMroQ&usqp=CAU" />
-                                <Details>
-                                    <ProductName><b>PRODUCT:</b> Woman's flower T-Shirt</ProductName>
-                                    <ProductId><b>ID:</b> 3958201</ProductId>
-                                    <ProductColor color="black" />
-                                    <ProductSize><b>SIZE:</b>L</ProductSize>
-                                </Details>
-                            </ProductDetail>
-                            <PriceDetail>
-                                <ProductAmountContainer>
-                                    <AddIcon />
-                                    <ProductAmount>2</ProductAmount>
-                                    <RemoveIcon />
-                                </ProductAmountContainer>
-                                <ProductPrice>₹ 1000</ProductPrice>
-                            </PriceDetail>
-                        </Product>
-                        <Hr />
-                        <Product>
-                            <ProductDetail>
-                                <Image src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRU1t2GJTMqP6hrAVVASRply5-WavcmOUmZCA&usqp=CAU" />
-                                <Details>
-                                    <ProductName><b>PRODUCT:</b> Man's Collared Half sleeve T-Shirt</ProductName>
-                                    <ProductId><b>ID:</b> 2493473</ProductId>
-                                    <ProductColor color="gray" />
-                                    <ProductSize><b>SIZE:</b>XL</ProductSize>
-                                </Details>
-                            </ProductDetail>
-                            <PriceDetail>
-                                <ProductAmountContainer>
-                                    <AddIcon />
-                                    <ProductAmount>2</ProductAmount>
-                                    <RemoveIcon />
-                                </ProductAmountContainer>
-                                <ProductPrice>₹ 700</ProductPrice>
-                            </PriceDetail>
-                        </Product>
+                        {cart.products.map(product => (
+                            <>
+                                <Product>
+                                    <ProductDetail>
+                                        <Image src={product.img} />
+                                        <Details>
+                                            <ProductName><b>PRODUCT: </b>{product.title}</ProductName>
+                                            <ProductId><b>ID: </b> {product.productId}</ProductId>
+                                            <ProductColor color={product.color} />
+                                            <ProductSize><b>SIZE:</b>{product.size}</ProductSize>
+                                        </Details>
+                                    </ProductDetail>
+                                    <PriceDetail>
+                                        <ProductAmountContainer>
+                                            <ProductAmount><b>QUANTITY: </b>{product.quantity}</ProductAmount>
+                                        </ProductAmountContainer>
+                                        <ProductPrice>$ {product.price * product.quantity}</ProductPrice>
+                                    </PriceDetail>
+                                    <DeleteIconButton>
+                                        <DeleteForeverIcon style={{ fontSize: "28px" }} onClick={() => handleDelete(product)} />
+                                    </DeleteIconButton>
+                                </Product>
+                                <Hr />
+                            </>
+                        ))}
                     </Info>
                     <Summary>
                         <SummaryTitle>ORDER SUMMARY</SummaryTitle>
                         <SummaryItem>
                             <SummaryItemText>Subtotal</SummaryItemText>
-                            <SummaryItemPrice>₹ 1700</SummaryItemPrice>
+                            <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryItem>
                             <SummaryItemText>Estimated Shipping</SummaryItemText>
-                            <SummaryItemPrice>₹ 150</SummaryItemPrice>
+                            <SummaryItemPrice>$ 5</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryItem>
                             <SummaryItemText>Shipping Discount</SummaryItemText>
-                            <SummaryItemPrice>₹ -150</SummaryItemPrice>
+                            <SummaryItemPrice>$ -5</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryItem type="total">
                             <SummaryItemText>Total</SummaryItemText>
-                            <SummaryItemPrice>₹ 1700</SummaryItemPrice>
+                            <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                         </SummaryItem>
-                        <Button>CHECKOUT NOW</Button>
+                        <StripeCheckout
+                            stripeKey={KEY}
+                            token={onToken}
+                            name="TSELLERS"
+                            image="https://neelkanthhospital.com/blog/wp-content/uploads/2019/01/t-shirt-with-logo-1.jpg"
+                            shippingAddress
+                            billingAddress
+                            description={`Your total is ₹ ${cart.total}`}
+                            amount={cart.total * 100}
+                        >
+                            <Button>CHECKOUT NOW</Button>
+                        </StripeCheckout>
                     </Summary>
                 </Bottom>
             </Wrapper>
