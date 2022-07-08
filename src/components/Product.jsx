@@ -68,11 +68,12 @@ const Icon = styled.div`
 
 const Product = ({ item }) => {
     const user = useSelector(state => state.user.currentUser)
+    const cart = useSelector(state => state.cart)
     const dispatch = useDispatch()
     const handleClick = () => {
         if (user) {
             // console.log(user);
-            loadCartReq(dispatch, user._id)
+            cart.products.length === 0 && loadCartReq(dispatch, user._id)
         }
     }
     return (

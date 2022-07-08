@@ -96,17 +96,17 @@ const Navbar = () => {
     const history = useHistory()
 
     const handleCart = () => {
-        if (user && cart.products === []) {
+        if (user && cart.products.length === 0) {
             console.log(user);
             loadCartReq(dispatch, user._id)
         }
-        cart.userId && addtoCartReq(cart.products, cart.userId)
+        cart.products.length !== 0 && addtoCartReq(cart.products, cart.userId)
     }
 
 
     const handleClick = (e) => {
         e.preventDefault()
-        addtoCartReq(cart.products, cart.userId)
+        cart.products.length !== 0 && addtoCartReq(cart.products, cart.userId)
         logout(dispatch, JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser)
         dispatch(emptyCart())
         history.push("/login")

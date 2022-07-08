@@ -172,7 +172,7 @@ const Cart = () => {
     const dispatch = useDispatch()
 
     const handleClick = () => {
-        addtoCartReq(cart.products, cart.userId)
+        cart.products.length !== 0 && addtoCartReq(cart.products, cart.userId)
     }
 
     const handleDelete = (product) => {

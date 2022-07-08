@@ -92,6 +92,7 @@ const Button = styled.button`
 const Slider = () => {
     const [slideIndex, setSlideIndex] = useState(0)
     const user = useSelector(state => state.user.currentUser)
+    const cart = useSelector(state => state.cart)
     const dispatch = useDispatch()
     const handleClick = (direction) => {
         if (direction === "left") {
@@ -102,7 +103,7 @@ const Slider = () => {
     }
     const handleCart = () => {
         if (user) {
-            loadCartReq(dispatch, user._id)
+            cart.products.length === 0 && loadCartReq(dispatch, user._id)
         }
     }
 
