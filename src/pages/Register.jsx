@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom"
 import styled from "styled-components"
 import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
-import { addEndUser, createCart } from "../redux/apiCalls"
+import { addEndUser } from "../redux/apiCalls"
 import { mobile, teblet } from "../responsive"
 
 const Container = styled.div`
@@ -89,12 +89,12 @@ const Register = () => {
                 <Wrapper>
                     <Title>CREATE AN ACCOUNT</Title>
                     <Form>
-                        <Input placeholder="name" onChange={e => e.target.value} />
-                        <Input placeholder="last name" onChange={e => e.target.value} />
-                        <Input placeholder="username" onChange={e => setUsername(e.target.value)} />
-                        <Input placeholder="email" onChange={e => setEmail(e.target.value)} />
-                        <Input placeholder="password" onChange={e => setPassword(e.target.value)} />
-                        <Input placeholder="confirm password" />
+                        <Input placeholder="name" type="text" onChange={e => e.target.value} />
+                        <Input placeholder="last name" type="text" onChange={e => e.target.value} />
+                        <Input placeholder="username" type="text" onChange={e => setUsername(e.target.value)} />
+                        <Input placeholder="email" type="email" onChange={e => setEmail(e.target.value)} />
+                        <Input placeholder="password" type="password" onChange={e => setPassword(e.target.value)} />
+                        <Input placeholder="confirm password" type="password" />
                         <Button onClick={handleClick} disabled={isFetching}>CREATE</Button>
                         {error && <Error>Something went wrong!!</Error>}
                     </Form>
