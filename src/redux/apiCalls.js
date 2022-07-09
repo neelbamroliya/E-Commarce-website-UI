@@ -1,7 +1,7 @@
 import { loginFailure, loginStart, loginSuccess, logoutstat } from "./userRedux"
 import { publicRequest, userRequest } from "../requestMethods"
 import { addEndUserFailure, addEndUserStart, addEndUserSuccess } from "./endUserRedux"
-import { loadCart } from "../redux/cartRedux"
+import { cartCheckout, loadCart } from "../redux/cartRedux"
 
 export const login = async (dispatch, user) => {
     dispatch(loginStart())
@@ -61,3 +61,9 @@ export const loadCartReq = async (dispatch, userId) => {
     dispatch(loadCart(res.data))
 }
 
+export const cartCheckoutReq = async (dispatch, checkoutDetails) => {
+    // console.log(checkoutDetails);
+    const res = await userRequest.post("/orders/checkout", { checkoutDetails })
+    // console.log(res.data);
+    dispatch(cartCheckout())
+}

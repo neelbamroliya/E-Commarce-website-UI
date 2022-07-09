@@ -5,14 +5,13 @@ import Navbar from "../components/Navbar"
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { mobile } from "../responsive";
 import { useDispatch, useSelector } from "react-redux";
-import StripeCheckout from "react-stripe-checkout";
-import { useEffect, useState } from "react";
-import { userRequest } from "../requestMethods";
-import { Link, useHistory } from "react-router-dom";
-import { addtoCartReq } from "../redux/apiCalls";
+// import StripeCheckout from "react-stripe-checkout";
+import { Link } from "react-router-dom";
+import { addtoCartReq, cartCheckoutReq } from "../redux/apiCalls";
 import { removeProduct } from "../redux/cartRedux";
+import PaypalButton from "../PaypalButton";
 
-const KEY = "pk_test_51LD1xGSES4oyVE3zjzxBPvqt99ViCZnLUYNVWVu2T9yYoHFWELQkhCaLoMXEqbH0H8KNuKbnuHxOIC2gbop0VToR001OqAid3r"
+// const KEY = "pk_test_51LD1xGSES4oyVE3zjzxBPvqt99ViCZnLUYNVWVu2T9yYoHFWELQkhCaLoMXEqbH0H8KNuKbnuHxOIC2gbop0VToR001OqAid3r"
 
 const Container = styled.div`
 
@@ -40,7 +39,7 @@ const TopButton = styled.button`
     font-weight: 600;
     cursor: pointer;
     border: ${props => props.type === "filled" && "none"};
-    background-color: ${props => props.type === "filled" ? "black" : "transparent"};
+    background-color: ${props => props.type === "filled" ? "" : "transparent"};
     color: ${props => props.type === "filled" && "white"};
 `
 
@@ -153,9 +152,10 @@ const SummaryItemPrice = styled.span``
 const Button = styled.button`
     width: 100%;
     padding: 10px;
-    background-color: black;
+    /* background-color: black; */
     color: white;
     font-weight: 600;
+    border: none;
 `
 
 const DeleteIconButton = styled.button`
@@ -167,8 +167,6 @@ const DeleteIconButton = styled.button`
 
 const Cart = () => {
     const cart = useSelector(state => state.cart)
-    const [stripeToken, setStripeToken] = useState("")
-    const history = useHistory()
     const dispatch = useDispatch()
 
     const handleClick = () => {
@@ -180,24 +178,13 @@ const Cart = () => {
         // removefromCartReq(dispatch, cart.userId, product)
     }
 
-
-    const onToken = (token) => {
-        setStripeToken(token)
+    const tranSuccess = async (payment) => {
+        // console.log(payment);
+        const { paymentID, address } = payment
+        cartCheckoutReq(dispatch, { cart, paymentID, address })
+        alert("payment is successful and your order has been placed...thank you..")
     }
 
-    useEffect(() => {
-        const makeRequest = async () => {
-            try {
-                const res = await userRequest.post("/checkout/payment", {
-                    tokenId: stripeToken.id,
-                    amount: 500
-                })
-                // console.log(res.data);
-                history.push("/success", { data: res.data })
-            } catch (err) { }
-        }
-        stripeToken && makeRequest()
-    }, [stripeToken, cart.total, history])
 
     return (
         <Container>
@@ -213,7 +200,9 @@ const Cart = () => {
                         <TopText>Shoping Bag ({cart.products.length})</TopText>
                         <TopText>Your Wishlist (0)</TopText>
                     </TopTexts>
-                    <TopButton type="filled">CHECKOUT NOW</TopButton>
+                    <TopButton type="filled">
+                        <PaypalButton total={cart.total} tranSuccess={tranSuccess} />
+                    </TopButton>
                 </Top>
                 <Bottom>
                     <Info>
@@ -261,18 +250,9 @@ const Cart = () => {
                             <SummaryItemText>Total</SummaryItemText>
                             <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                         </SummaryItem>
-                        <StripeCheckout
-                            stripeKey={KEY}
-                            token={onToken}
-                            name="TSELLERS"
-                            image="https://neelkanthhospital.com/blog/wp-content/uploads/2019/01/t-shirt-with-logo-1.jpg"
-                            shippingAddress
-                            billingAddress
-                            description={`Your total is ₹ ${cart.total}`}
-                            amount={cart.total * 100}
-                        >
-                            <Button>CHECKOUT NOW</Button>
-                        </StripeCheckout>
+                        <Button>
+                            <PaypalButton total={cart.total} tranSuccess={tranSuccess} />
+                        </Button>
                     </Summary>
                 </Bottom>
             </Wrapper>

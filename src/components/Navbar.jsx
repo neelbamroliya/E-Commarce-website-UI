@@ -97,9 +97,10 @@ const Navbar = () => {
 
     const handleCart = () => {
         if (user && cart.products.length === 0) {
-            console.log(user);
+            // console.log(user);
             loadCartReq(dispatch, user._id)
         }
+        // console.log(cart.products.length);
         cart.products.length !== 0 && addtoCartReq(cart.products, cart.userId)
     }
 

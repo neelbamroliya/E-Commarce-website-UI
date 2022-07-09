@@ -31,7 +31,7 @@ const cartSlice = createSlice({
             state.error = false
         },
         loadCart: (state, action) => {
-            state.quantity = action.payload.cartItems.length
+            state.quantity = action.payload.cartItems.length ? action.payload.cartItems.length : 0
             state.userId = action.payload.userId
             state.products = action.payload.cartItems
             state.total = (action.payload.cartItems.map(item => parseInt(item.quantity) * parseInt(item.price))).reduce((a, b) => a + b, 0)
@@ -42,6 +42,11 @@ const cartSlice = createSlice({
             state.products = []
             state.total = 0
         },
+        cartCheckout: (state) => {
+            state.quantity = 0
+            state.products = []
+            state.total = 0
+        }
         // addToCart: (state, action) => {
         //     // console.log(action.payload);
         //     state.quantity += 1
@@ -82,5 +87,5 @@ const cartSlice = createSlice({
     }
 })
 
-export const { addProduct, removeProduct, addToCart, loadCart, emptyCart } = cartSlice.actions
+export const { addProduct, removeProduct, addToCart, loadCart, emptyCart, cartCheckout } = cartSlice.actions
 export default cartSlice.reducer
